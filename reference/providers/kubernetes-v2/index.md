@@ -108,7 +108,7 @@ Serveral annotations are built into each manifest and cannot be used otherwise.
 
 Resource mapping between Spinnaker and Kubernetes constructs, as well as the
 introduction of new types of resources, is a lot more flexible in the
-Kubernetes provider V2 for other providers, because of how many types of
+Kubernetes provider V2 than for other providers, because of how many types of
 resources Kubernetes supports. Also the Kubernetes extension
 mechanisms&mdash;called [Custom Resource Definitions
 (CRDs)](https://kubernetes.io/docs/concepts/api-extension/custom-resources/)&mdash;make
@@ -121,19 +121,19 @@ It is worth noting that the resource mapping exists primarily to render
 resources in the UI according to Spinnaker conventions. It does not affect how
 resources are deployed or managed.
 
-There are three major groupings of resources in Spinnaker, Server Groups, Load
+There are three major groupings of resources in Spinnaker: Server Groups, Load
 Balancers, and Security Groups. They correspond to Kubernetes resource kinds as
 follows:
 
-* Workloads ≈ Spinnaker Server Groups
-* Services, Ingresses ≈ Load Balancers
-* NetworkPolicies ≈ Security Groups
+* Spinnaker Server Groups ≈ Workloads
+* Load Balancers ≈ Services, Ingresses
+* Security Groups ≈ NetworkPolicies
 
 ## Resource Management Policies
 
 How you manage the deployment and updates of a Kubernetes resource is dictated
-by its kind, via the policies that apply to a particular kind. Below are
-descriptions of these policies, followed by a mapping of kinds to policies.
+by its kind, via the policies that apply to a particular kind. Below is a list
+of policies, [followed by the mapping from kinds to policies](#policy-mapping)
 
 * __Operations__
 
@@ -168,13 +168,15 @@ descriptions of these policies, followed by a mapping of kinds to policies.
   This describes under what conditions this kind is considered stable after a
   new `spec` has been submitted.
 
-## Workloads
+## Policy Mapping
+
+### Workloads
 
 Anything classified as a Spinnaker Server Group will be rendered on the
 "Clusters Tab" for Spinnaker. If possible, any pods owned by the workload will
 be rendered as well.
 
-| __Resource__ | _Deploy_ | _Delete_ | _Scale_ | _Undo Rollout_ | _Pause Rollout_ | _Resume Rollout_ | Versioned | Stability |
+| __Resource Kind__ | _Deploy_ | _Delete_ | _Scale_ | _Undo Rollout_ | _Pause Rollout_ | _Resume Rollout_ | Versioned | Stability |
 |-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|-|
 | __`DaemonSet`__ | Yes | Yes | No | Yes | Yes | Yes | No | The `status.currentNumberScheduled`, `status.updatedNumberScheduled`, `status.numberAvailable`, and `status.numberReady` must all be at least the `status.desiredNumberScheduled`. |
 | __`Deployment`__ | Yes | Yes | Yes | Yes | Yes | Yes | No | The `status.updatedReplicas`, `status.availableReplicas`, and `status.readyReplicas` must all match the desired replica count for the Deployment. |
@@ -182,7 +184,7 @@ be rendered as well.
 | __`ReplicaSet`__ | Yes | Yes | Yes | No | No | No | No | The `status.fullyLabledReplicas`, `status.availableReplicas`, and `status.readyReplicas` must all match the desired replica count for the ReplicaSet. |
 | __`StatefulSet`__ | Yes | Yes | Yes | Yes | Yes | Yes | No | The `status.currentRevision`, and `status.updatedRevision` must match, and `status.currentReplicas`, and `status.readyReplicas` must match the spec's replica count. |
 
-## Services, Ingresses
+### Services, Ingresses
 
-## NetworkPolicies
+### NetworkPolicies
 
