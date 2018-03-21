@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+HAL_POD=$(kubectl get po -n spinnaker -l "stack=halyard" \
+  -o jsonpath="{.items[0].metadata.name}")
+
+kubectl exec $HAL_POD -n spinnaker -- sh -c "hal $*"
